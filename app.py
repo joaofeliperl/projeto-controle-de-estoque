@@ -15,21 +15,30 @@ mysql = MySQL(app)
 def home():
     return render_template_string(open('login.html').read())
 
-@app.route('/signup', methods = ['GET','POST'])
+@app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    if request.method == 'POST':
-        email = request.form['email']
-        name = request.form['name']
-        password = request.form['password']
+ if request.method == 'POST':
+     email = request.form['email']
+     name = request.form['name']
+     password = request.form['password']
 
-        cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO usuario (email, name, password) VALUES (%s,%s,%s)", (email, name, password))
-        mysql.connection.commit()
-        cur.close()
+     print(f"Email: {email}, Nome: {name}, Senha: {password}")  # Adiciona logs para verificar os dados
 
-        flash('Conta criada com sucesso!')
-        return redirect(url_for ('home'))
-    return render_template_string(open('signup.html').read())
+     try:
+         cur = mysql.connection.cursor()
+         cur.execute("INSERT INTO usuario (email, name, password) VALUES (%s, %s, %s)", (email, name, password))
+         mysql.connection.commit()
+         cur.close()
+
+         flash('Conta criada com sucesso!')
+         return redirect(url_for('home'))
+     except Exception as e:
+         print(f"Erro ao inserir no banco de dados: {e}")
+         flash('Erro ao criar a conta.')
+         return redirect(url_for('signup'))
+ 
+ return render_template_string(open('signup.html').read())
+
 
 if __name__ == '__main__': 
     app.run (debug=True, port=5001)

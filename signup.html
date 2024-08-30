@@ -14,19 +14,21 @@
     <div class="container">
         <div class="signup-box">
             <h1>Estoque CTRL</h1>
-            <form action="">
+            <form action="/signup" method="post">
                 <div class="mb-3">
                     <label for="email" class="form-label">Email</label>
-                    <input type="email" name="email" class="form-control" id="email" placeholder="Digite seu email" required>
-                </div>
-                <div class="mb-3">
-                    <label for="nome" class="form-label">Nome</label>
-                    <input type="text" name="name" class="form-control" id="name" placeholder="Digite seu nome" maxlength="50"
+                    <input type="email" name="email" class="form-control" id="email" placeholder="Digite seu email"
                         required>
                 </div>
                 <div class="mb-3">
+                    <label for="nome" class="form-label">Nome</label>
+                    <input type="text" name="name" class="form-control" id="name" placeholder="Digite seu nome"
+                        maxlength="50" required>
+                </div>
+                <div class="mb-3">
                     <label for="password" class="form-label">Senha</label>
-                    <input type="password" name="password" class="form-control" id="password" placeholder="Digite sua senha" required>
+                    <input type="password" name="password" class="form-control" id="password"
+                        placeholder="Digite sua senha" required>
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Confirme a senha</label>
