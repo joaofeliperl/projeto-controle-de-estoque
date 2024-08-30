@@ -41,3 +41,25 @@ body {
     margin-bottom: 20px;
     text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.1);
 }
+
+.login-box .circle-primary{
+    width: 564px; 
+    height: 534px; 
+    background-color: #d9d9d9; 
+    border-radius: 50%; 
+    position: absolute; 
+    top: -120px; 
+    left: -120px;
+    z-index: -1;
+}
+
+.login-box .circle-secondary{
+    width: 564px; 
+    height: 534px; 
+    background-color: #d9d9d9; 
+    border-radius: 50%; 
+    position: absolute; 
+    top: 620px; 
+    left: 1420px; 
+    z-index: -1;
+}
