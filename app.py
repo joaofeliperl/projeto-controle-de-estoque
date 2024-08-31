@@ -19,15 +19,15 @@ def home():
        email = request.form['email']
        password = request.form['password']
 
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM usuario WHERE email = %s AND password = %s", (email, password))
-    user = cur.fetchone()
-    cur.close()
+       cur = mysql.connection.cursor()
+       cur.execute("SELECT * FROM usuario WHERE email = %s AND password = %s", (email, password))
+       user = cur.fetchone()
+       cur.close()
 
-    if user:
-        return redirect(url_for('almox'))
-    else:
-        return redirect(url_for('login'))
+       if user:
+            return redirect(url_for('almox'))
+       else:
+            return redirect(url_for('login'))
 
     return render_template_string(open('login.html').read())
 
