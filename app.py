@@ -1,4 +1,4 @@
-from flask import Flask, render_template_string, request, redirect, flash, url_for
+from flask import Flask, render_template_string, request, redirect, flash, url_for, session
 from flask_mysqldb import MySQL
 from flask_bcrypt import Bcrypt
 
@@ -20,14 +20,16 @@ def home():
        password = request.form['password']
 
        cur = mysql.connection.cursor()
-       cur.execute("SELECT * FROM usuario WHERE email = %s AND password = %s", (email, password))
+       cur.execute("SELECT * FROM usuario WHERE email = %s", [email])
        user = cur.fetchone()
        cur.close()
 
-       if user:
-            return redirect(url_for('almox'))
+       if user and bcrypt.check_password_hash(user[3], password):
+           session['user_id'] = user[0]
+           return redirect(url_for('almox'))
        else:
-            return redirect(url_for('home'))
+           print('ERRO')
+           return redirect(url_for('home'))
 
     return render_template_string(open('login.html').read())
 
@@ -52,6 +54,8 @@ def signup():
 
 @app.route('/almox')
 def almox():
+    if 'user_id' not in session:
+        return redirect(url_for('home'))
     return render_template_string(open('almox.html').read())
 
 if __name__ == '__main__': 
