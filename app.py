@@ -27,7 +27,7 @@ def home():
        if user:
             return redirect(url_for('almox'))
        else:
-            return redirect(url_for('login'))
+            return redirect(url_for('home'))
 
     return render_template_string(open('login.html').read())
 
@@ -52,8 +52,7 @@ def signup():
 
 @app.route('/almox')
 def almox():
- 
- return render_template_string(open('almox.html').read())
+    return render_template_string(open('almox.html').read())
 
 if __name__ == '__main__': 
     app.run (debug=True, port=5001)
