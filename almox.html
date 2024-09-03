@@ -3,9 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="stylesheet" href="/static/almox/almox.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" 
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <title>Almox</title>
 </head>
 <body>
-    <h1>Hello World!!!!!!!!!</h1>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Side Menu -->
+            <div class="col-md-2 sidebar">
+                <a href="/">Tela Inicial</a>
+                <a href="/produtos">Listagem de Produtos</a>
+            </div>
+            <!-- Main Content -->
+            <div class="col-md-10">
+                <div class="table-container">
+                    <h3>Listagem de Produtos Cadastrados</h3>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="search" placeholder="Pesquisar">
+                        <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#addProductModal">Adicionar</button>
+                    </div>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Nome do Produto</th>
+                                <th>Categoria</th>
+                                <th>Valor</th>
+                                <th>Quantidade</th>
+                                <th>Total</th>
+                                <th>Opções</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productTable">
+                            <!-- Os produtos serão inseridos aqui pelo Flask -->
+                        </tbody>
+                    </table>
+                    <div class="d-flex justify-content-between">
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination">
+                                <li class="page-item"><a class="page-link" href="#">Anterior</a></li>
+                                <li class="page-item"><a class="page-link" href="#">Próximo</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Adicionar Produto -->
+    <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addProductModalLabel">Adicionar Produto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addProductForm">
+                        <div class="mb-3">
+                            <label for="nome" class="form-label">Nome do Produto</label>
+                            <input type="text" class="form-control" id="nome" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="categoria" class="form-label">Categoria</label>
+                            <input type="text" class="form-control" id="categoria" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="valor" class="form-label">Valor</label>
+                            <input type="number" step="0.01" class="form-control" id="valor" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="quantidade" class="form-label">Quantidade</label>
+                            <input type="number" class="form-control" id="quantidade" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+<script src="/static/almox/almox.js"></script>
 </body>
 </html>

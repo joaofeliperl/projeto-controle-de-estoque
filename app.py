@@ -58,5 +58,10 @@ def almox():
         return redirect(url_for('home'))
     return render_template_string(open('almox.html').read())
 
+@app.route('/get_products')
+def products():
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute()
+
 if __name__ == '__main__': 
     app.run (debug=True, port=5001)
