@@ -2,11 +2,13 @@ body {
     font-family: Arial, sans-serif;
     background-color: #f8f9fa;
 }
+
 .sidebar {
     background-color: #343a40;
     height: 100vh;
     padding: 15px;
 }
+
 .sidebar a {
     color: #fff;
     text-decoration: none;
@@ -15,12 +17,15 @@ body {
     margin-bottom: 10px;
     border-radius: 5px;
 }
+
 .sidebar a:hover {
     background-color: #495057;
 }
+
 .table-container {
     margin-top: 20px;
 }
+
 .btn-custom {
     background-color: #20c997 !important;
     color: white !important;
@@ -28,17 +33,21 @@ body {
     margin-top: 15px;
     margin-left: 1400px;
 }
+
 .btn-custom:hover {
-    background-color: #198754 ;
+    background-color: #198754;
     color: white;
 }
+
 .table {
     background-color: white;
 }
+
 .btn-delete {
     background-color: #dc3545;
     color: white;
 }
+
 .btn-update {
     background-color: #ffc107;
     color: white;

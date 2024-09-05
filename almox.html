@@ -1,31 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/static/almox/almox.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" 
-    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <title>Almox</title>
 </head>
+
 <body>
     <div class="container-fluid">
         <div class="row">
-            <!-- Side Menu -->
-            <div class="col-md-2 sidebar">
-                <a href="/">Tela Inicial</a>
-                <a href="/produtos">Listagem de Produtos</a>
+
+            <div class="col-md-2 sidebar bg-dark text-light p-4">
+                <h4>Menu</h4>
+                <a href="{{url_for('almox')}}" class="text-light">Listagem de Produtos</a>
             </div>
-            <!-- Main Content -->
-            <div class="col-md-10">
+
+            <div class="col-md-10 p-4">
                 <div class="table-container">
-                    <h3>Listagem de Produtos Cadastrados</h3>
-                    <div class="mb-3">
-                        <input type="text" class="form-control" id="search" placeholder="Pesquisar">
-                        <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#addProductModal">Adicionar</button>
+                    <h3 class="mb-3">Listagem de Produtos Cadastrados</h3>
+                    <div class="mb-3 d-flex justify-content-between">
+                        <input type="text" class="form-control w-75" id="search" placeholder="Pesquisar">
+                        <button class="btn btn-success" data-bs-toggle="modal"
+                            data-bs-target="#addProductModal">Adicionar Produto</button>
                     </div>
-                    <table class="table table-bordered">
-                        <thead>
+                    <table class="table table-hover table-bordered">
+                        <thead class="table-dark">
                             <tr>
                                 <th>Código</th>
                                 <th>Nome do Produto</th>
@@ -37,10 +40,9 @@
                             </tr>
                         </thead>
                         <tbody id="productTable">
-                            <!-- Os produtos serão inseridos aqui pelo Flask -->
                         </tbody>
                     </table>
-                    <div class="d-flex justify-content-between">
+                    <div id="pagination" class="d-flex justify-content-between mt-3">
                         <nav aria-label="Page navigation">
                             <ul class="pagination">
                                 <li class="page-item"><a class="page-link" href="#">Anterior</a></li>
@@ -53,8 +55,9 @@
         </div>
     </div>
 
-    <!-- Modal de Adicionar Produto -->
-    <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
+
+    <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -84,7 +87,48 @@
                 </div>
             </div>
         </div>
-    </div>
-<script src="/static/almox/almox.js"></script>
+    </div>
+
+    <div class="modal fade" id="updateProductModal" tabindex="-1" aria-labelledby="updateProductModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateProductModalLabel">Atualizar Produto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="updateProductForm">
+                        <div class="mb-3">
+                            <label for="updateNome" class="form-label">Nome do Produto</label>
+                            <input type="text" class="form-control" id="updateNome" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="updateCategoria" class="form-label">Categoria</label>
+                            <input type="text" class="form-control" id="updateCategoria" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="updateValor" class="form-label">Valor</label>
+                            <input type="number" step="0.01" class="form-control" id="updateValor" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="updateQuantidade" class="form-label">Quantidade</label>
+                            <input type="number" class="form-control" id="updateQuantidade" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+
+
+
+    <script src="/static/almox/almox.js"></script>
 </body>
+
 </html>
