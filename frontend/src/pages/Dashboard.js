@@ -17,14 +17,14 @@ const Dashboard = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-const fetchProducts = () => {
-    const token = localStorage.getItem("token")
-    axios.get("http://localhost:5001/products",{
-        headers: {Authorization: `Bearer ${token}`}
-    })
-        .then(response => setProducts(response.data))
-        .catch(error => console.error("Erro ao buscar produtos:", error));
-    }    
+    const fetchProducts = () => {
+        const token = localStorage.getItem("token")
+        axios.get("http://localhost:5001/products", {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+            .then(response => setProducts(response.data))
+            .catch(error => console.error("Erro ao buscar produtos:", error));
+    }
 
     useEffect(() => {
         fetchProducts();
@@ -39,16 +39,25 @@ const fetchProducts = () => {
     };
 
     const handleSubmit = () => {
-        const token = localStorage.getItem("token")
-        axios.post("http://localhost:5001/products", newProduct, {
-            headers: {Authorization: `Bearer ${token}`}
+        const token = localStorage.getItem("token");
+        const formattedProduct = {
+            nome: newProduct.nome,
+            categoria: newProduct.categoria,
+            valor: newProduct.valor,
+            quant: newProduct.quantidade
+        };
+
+        axios.post("http://localhost:5001/products", formattedProduct, {
+            headers: { Authorization: `Bearer ${token}` }
         })
-            .then(response => {
-                setProducts([...products, response.data]);
+            .then(() => {
                 handleCloseDialog();
+                fetchProducts();
             })
             .catch(error => console.error("Erro ao adicionar produto:", error));
     };
+
+
 
     return (
         <>
@@ -79,21 +88,21 @@ const fetchProducts = () => {
                             gap: 2
                         }}>
 
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            startIcon={<Add />}
-                            sx={{ minWidth: isMobile ? "150px" : "200px", fontSize: isMobile ? "0.75rem" : "1rem" }}
-                            onClick={handleOpenDialog}
-                        >
-                            Adicionar Produto
-                        </Button>
-                        <Button 
-                            variant="contained"
-                            color="grey"
-                            startIcon={<Refresh />}
-                            sx={{ minWidth: isMobile ? "150px" : "200px", fontSize: isMobile? "0.75rem" : "1rem"}}
-                            onClick={fetchProducts}
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                startIcon={<Add />}
+                                sx={{ minWidth: isMobile ? "150px" : "200px", fontSize: isMobile ? "0.75rem" : "1rem" }}
+                                onClick={handleOpenDialog}
+                            >
+                                Adicionar Produto
+                            </Button>
+                            <Button
+                                variant="contained"
+                                color="grey"
+                                startIcon={<Refresh />}
+                                sx={{ minWidth: isMobile ? "150px" : "200px", fontSize: isMobile ? "0.75rem" : "1rem" }}
+                                onClick={fetchProducts}
                             >
                                 Atualizar
                             </Button>
@@ -120,7 +129,7 @@ const fetchProducts = () => {
                                         <TableCell>{product.nome}</TableCell>
                                         <TableCell>{product.categoria}</TableCell>
                                         <TableCell>R$ {product.valor}</TableCell>
-                                        <TableCell>{product.quantidade}</TableCell>
+                                        <TableCell>{product.quant}</TableCell>
                                         <TableCell>
                                             <IconButton color="primary" size="small">
                                                 <Edit />

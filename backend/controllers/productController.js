@@ -6,10 +6,10 @@ export const getProducts = async (req, res) => {
 };
 
 export const addProduct = async (req, res) => {
-    const { nome, categoria, valor, quantidade } = req.body;
+    const { nome, categoria, valor, quant } = req.body;
 
     try {
-        const product = await Product.create({ nome, categoria, valor, quant: quantidade });
+        const product = await Product.create({ nome, categoria, valor, quant });
         res.json({ message: "Produto adicionado com sucesso!", product });
     } catch (error) {
         res.status(400).json({ message: "Erro ao adicionar produto", error });
