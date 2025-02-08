@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Drawer, List, ListItem, ListItemIcon, ListItemText, IconButton, Button, Divider } from "@mui/material";
-import { Menu, Home, Inventory, Settings, Logout } from "@mui/icons-material";
+import { Drawer, List, ListItemButton, ListItemIcon, ListItemText, IconButton, Divider } from "@mui/material";
+import { Menu, Home, Inventory, ArrowDownward, ArrowUpward, ShoppingCart, People, Logout } from "@mui/icons-material";
 
 const Sidebar = () => {
     const [open, setOpen] = useState(false);
@@ -38,46 +38,56 @@ const Sidebar = () => {
                 anchor="left"
                 open={open}
                 onClose={toggleDrawer(false)}
-                sx={{
-                    zIndex: 4000 // Faz com que o Sidebar fique acima de tudo
-                }}
+                sx={{ zIndex: 4000 }}
             >
                 <List sx={{ width: 250 }}>
-                    <ListItem button onClick={() => navigate("/dashboard")}>
-                        <ListItemIcon>
-                            <Home />
-                        </ListItemIcon>
-                        <ListItemText primary="Dashboard" />
-                    </ListItem>
+                    <ListItemButton onClick={() => navigate("/home")} sx={{ cursor: "pointer" }}>
+                        <ListItemIcon><Home /></ListItemIcon>
+                        <ListItemText primary="Início" />
+                    </ListItemButton>
 
-                    <ListItem button onClick={() => navigate("/dashboard")}>
-                        <ListItemIcon>
-                            <Inventory />
-                        </ListItemIcon>
+                    <ListItemButton onClick={() => navigate("/dashboard")} sx={{ cursor: "pointer" }}>
+                        <ListItemIcon><Inventory /></ListItemIcon>
                         <ListItemText primary="Produtos" />
-                    </ListItem>
+                    </ListItemButton>
 
-                    <ListItem button onClick={() => navigate("/dashboard")}>
-                        <ListItemIcon>
-                            <Settings />
-                        </ListItemIcon>
-                        <ListItemText primary="Configurações" />
-                    </ListItem>
+                    <ListItemButton onClick={() => navigate("/entradas")} sx={{ cursor: "pointer" }}>
+                        <ListItemIcon><ArrowDownward /></ListItemIcon>
+                        <ListItemText primary="Entradas" />
+                    </ListItemButton>
+
+                    <ListItemButton onClick={() => navigate("/saidas")} sx={{ cursor: "pointer" }}>
+                        <ListItemIcon><ArrowUpward /></ListItemIcon>
+                        <ListItemText primary="Saídas" />
+                    </ListItemButton>
+
+                    <ListItemButton onClick={() => navigate("/vendas")} sx={{ cursor: "pointer" }}>
+                        <ListItemIcon><ShoppingCart /></ListItemIcon>
+                        <ListItemText primary="Vendas" />
+                    </ListItemButton>
+
+                    <ListItemButton onClick={() => navigate("/usuarios")} sx={{ cursor: "pointer" }}>
+                        <ListItemIcon><People /></ListItemIcon>
+                        <ListItemText primary="Usuários" />
+                    </ListItemButton>
 
                     <Divider sx={{ my: 2 }} /> {/* Linha separadora */}
 
                     {/* 🔥 Botão de Logout */}
-                    <ListItem>
-                        <Button
-                            variant="contained"
-                            color="error"
-                            fullWidth
-                            startIcon={<Logout />}
-                            onClick={handleLogout}
-                        >
-                            Sair
-                        </Button>
-                    </ListItem>
+                    <ListItemButton
+                        onClick={handleLogout}
+                        sx={{
+                            bgcolor: "error.main",
+                            color: "white",
+                            "&:hover": { bgcolor: "error.dark" }
+                        }}
+                    >
+                        <ListItemIcon sx={{ color: "white" }}> {/* Ícone branco */}
+                            <Logout />
+                        </ListItemIcon>
+                        <ListItemText primary="Sair" />
+                    </ListItemButton>
+
                 </List>
             </Drawer>
         </>
