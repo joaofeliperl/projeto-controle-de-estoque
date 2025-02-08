@@ -4,22 +4,28 @@ import { Box, TextField, Button, Typography, Paper } from "@mui/material";
 import axios from "axios";
 
 const Login = () => {
-    const [credentials, setCredentials] = useState({ email: "", senha: "" });
+    const [credentials, setCredentials] = useState({ email: "", password: "" });
     const [error, setError] = useState("");
     const navigate = useNavigate();
 
     const handleChange = (e) => {
-        setCredentials({ ...credentials, [e.target.name]: e.target.value });
+        setCredentials({ ...credentials, [e.target.name]: e.target.value.trim() });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        console.log("📩 Enviando dados de login:", credentials); // Log para verificar os dados enviados
+
         try {
             const response = await axios.post("http://localhost:5001/auth/login", credentials);
+            console.log("✅ Resposta do backend:", response.data); // Log da resposta
+
             localStorage.setItem("token", response.data.token);
             navigate("/dashboard");
         } catch (err) {
-            setError("Email ou senha incorretos.");
+            console.error("❌ Erro ao fazer login:", err.response?.data || err.message);
+            setError(err.response?.data?.message || "Erro ao tentar fazer login.");
         }
     };
 
@@ -40,7 +46,7 @@ const Login = () => {
                     />
                     <TextField
                         label="Senha"
-                        name="senha"
+                        name="password"
                         type="password"
                         fullWidth
                         margin="normal"
