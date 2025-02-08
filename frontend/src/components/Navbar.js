@@ -1,11 +1,18 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { AppBar, Toolbar, Typography, Box } from "@mui/material";
 
 const Navbar = () => {
     return (
-        <nav className="navbar navbar-dark bg-dark px-3">
-            <Link to="/" className="navbar-brand">Controle de Estoque</Link>
-        </nav>
+        <AppBar position="fixed" sx={{ zIndex: 2000 }}>
+            <Toolbar>
+                {/* Empurrando o título para a direita */}
+                <Box sx={{ flexGrow: 1 }}></Box>
+
+                <Typography variant="h6" noWrap sx={{ textAlign: "right", paddingRight: 2 }}>
+                    Controle de Estoque
+                </Typography>
+            </Toolbar>
+        </AppBar>
     );
 };
 
