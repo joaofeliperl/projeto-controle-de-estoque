@@ -6,7 +6,7 @@ import {
     TableHead, TableRow, Button, IconButton, Dialog, DialogTitle, DialogContent,
     DialogActions, TextField, useMediaQuery
 } from "@mui/material";
-import { Edit, Delete, Add } from "@mui/icons-material";
+import { Edit, Delete, Add, Refresh } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
 import axios from "axios";
 
@@ -17,10 +17,17 @@ const Dashboard = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
+const fetchProducts = () => {
+    const token = localStorage.getItem("token")
+    axios.get("http://localhost:5001/products",{
+        headers: {Authorization: `Bearer ${token}`}
+    })
+        .then(response => setProducts(response.data))
+        .catch(error => console.error("Erro ao buscar produtos:", error));
+    }    
+
     useEffect(() => {
-        axios.get("http://localhost:5001/products")
-            .then(response => setProducts(response.data))
-            .catch(error => console.error("Erro ao buscar produtos:", error));
+        fetchProducts();
     }, []);
 
     const handleOpenDialog = () => setOpenDialog(true);
@@ -32,7 +39,10 @@ const Dashboard = () => {
     };
 
     const handleSubmit = () => {
-        axios.post("http://localhost:5001/products", newProduct)
+        const token = localStorage.getItem("token")
+        axios.post("http://localhost:5001/products", newProduct, {
+            headers: {Authorization: `Bearer ${token}`}
+        })
             .then(response => {
                 setProducts([...products, response.data]);
                 handleCloseDialog();
@@ -64,15 +74,30 @@ const Dashboard = () => {
                             Produtos
                         </Typography>
 
+                        <Box sx={{
+                            display: "flex",
+                            gap: 2
+                        }}>
+
                         <Button
                             variant="contained"
                             color="primary"
                             startIcon={<Add />}
-                            sx={{ marginBottom: "10px", minWidth: isMobile ? "150px" : "200px", fontSize: isMobile ? "0.75rem" : "1rem" }}
+                            sx={{ minWidth: isMobile ? "150px" : "200px", fontSize: isMobile ? "0.75rem" : "1rem" }}
                             onClick={handleOpenDialog}
                         >
                             Adicionar Produto
                         </Button>
+                        <Button 
+                            variant="contained"
+                            color="grey"
+                            startIcon={<Refresh />}
+                            sx={{ minWidth: isMobile ? "150px" : "200px", fontSize: isMobile? "0.75rem" : "1rem"}}
+                            onClick={fetchProducts}
+                            >
+                                Atualizar
+                            </Button>
+                        </Box>
                     </Box>
 
                     {/* Tabela de Produtos */}
@@ -94,7 +119,7 @@ const Dashboard = () => {
                                         <TableCell>{product.codigo}</TableCell>
                                         <TableCell>{product.nome}</TableCell>
                                         <TableCell>{product.categoria}</TableCell>
-                                        <TableCell>R$ {product.valor.toFixed(2)}</TableCell>
+                                        <TableCell>R$ {product.valor}</TableCell>
                                         <TableCell>{product.quantidade}</TableCell>
                                         <TableCell>
                                             <IconButton color="primary" size="small">
