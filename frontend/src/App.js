@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -7,31 +7,51 @@ import Signup from "./pages/Signup";
 const App = () => {
     return (
         <Router>
-            <AuthRedirect /> {/* Redirecionamento automático */}
             <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
-                <Route path="/dashboard" element={<Dashboard />} />
+                <Route
+                    path="/dashboard"
+                    element={
+                        <ProtectedRoute>
+                            <Dashboard />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route path="/" element={<AuthRedirect />} />
             </Routes>
         </Router>
     );
 };
 
-// 🔥 Componente para redirecionamento automático
-const AuthRedirect = () => {
+// 🔥 Redireciona usuários não autenticados para login
+const ProtectedRoute = ({ children }) => {
     const navigate = useNavigate();
+    const token = localStorage.getItem("token");
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
-
         if (!token) {
-            navigate("/login"); // Se não estiver logado, vai para login
-        } else {
-            navigate("/dashboard"); // Se estiver logado, vai para dashboard
+            navigate("/login");
         }
-    }, [navigate]);
+    }, [navigate, token]);
 
-    return null; // Esse componente não precisa renderizar nada
+    return token ? children : null;
+};
+
+// 🔥 Redireciona automaticamente para a tela correta
+const AuthRedirect = () => {
+    const navigate = useNavigate();
+    const token = localStorage.getItem("token");
+
+    useEffect(() => {
+        if (token) {
+            navigate("/dashboard");
+        } else {
+            navigate("/login");
+        }
+    }, [navigate, token]);
+
+    return null;
 };
 
 export default App;
