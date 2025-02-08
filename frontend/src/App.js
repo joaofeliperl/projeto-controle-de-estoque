@@ -4,6 +4,7 @@ import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Home from "./pages/Home";
+import { jwtDecode } from "jwt-decode";
 
 const App = () => {
     return (
@@ -26,7 +27,7 @@ const App = () => {
     );
 };
 
-// 🔥 Redireciona usuários não autenticados para login
+
 const ProtectedRoute = ({ children }) => {
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
@@ -34,20 +35,48 @@ const ProtectedRoute = ({ children }) => {
     useEffect(() => {
         if (!token) {
             navigate("/login");
+            return;
+        }
+
+        try {
+            const decoded = jwtDecode(token);
+            const now = Date.now() / 1000; // Tempo atual em segundos
+
+            if (decoded.exp < now) {
+                localStorage.removeItem("token"); // Remove o token expirado
+                navigate("/login");
+            }
+        } catch (error) {
+            console.error("Erro ao decodificar token:", error);
+            localStorage.removeItem("token"); // Remove se o token for inválido
+            navigate("/login");
         }
     }, [navigate, token]);
 
     return token ? children : null;
 };
 
-// 🔥 Redireciona automaticamente para a tela correta
 const AuthRedirect = () => {
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
 
     useEffect(() => {
         if (token) {
-            navigate("/dashboard");
+            try {
+                const decoded = jwtDecode(token);
+                const now = Date.now() / 1000;
+
+                if (decoded.exp < now) {
+                    localStorage.removeItem("token"); // Remove o token expirado
+                    navigate("/login");
+                } else {
+                    navigate("/dashboard");
+                }
+            } catch (error) {
+                console.error("Erro ao decodificar token:", error);
+                localStorage.removeItem("token"); // Remove se for inválido
+                navigate("/login");
+            }
         } else {
             navigate("/login");
         }
@@ -55,5 +84,6 @@ const AuthRedirect = () => {
 
     return null;
 };
+
 
 export default App;

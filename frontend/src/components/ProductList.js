@@ -1,41 +1,42 @@
-import React, { useEffect, useState } from "react";
-import api from "../services/api";
+import React from "react";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton } from "@mui/material";
+import { Edit, Delete } from "@mui/icons-material";
 
-const ProductList = () => {
-    const [products, setProducts] = useState([]);
-
-    useEffect(() => {
-        api.get("/products")
-            .then((response) => setProducts(response.data))
-            .catch((error) => console.error("Erro ao buscar produtos:", error));
-    }, []);
-
+const ProductList = ({ products }) => {
     return (
-        <div className="container mt-4">
-            <h2>Lista de Produtos</h2>
-            <table className="table table-bordered table-striped">
-                <thead className="thead-dark">
-                    <tr>
-                        <th>Código</th>
-                        <th>Nome</th>
-                        <th>Categoria</th>
-                        <th>Valor</th>
-                        <th>Quantidade</th>
-                    </tr>
-                </thead>
-                <tbody>
+        <TableContainer component={Paper} sx={{ width: "100%", maxWidth: "1200px", marginTop: 1 }}>
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        <TableCell><b>Código</b></TableCell>
+                        <TableCell><b>Nome</b></TableCell>
+                        <TableCell><b>Categoria</b></TableCell>
+                        <TableCell><b>Valor</b></TableCell>
+                        <TableCell><b>Quantidade</b></TableCell>
+                        <TableCell><b>Ações</b></TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
                     {products.map((product) => (
-                        <tr key={product.codigo}>
-                            <td>{product.codigo}</td>
-                            <td>{product.nome}</td>
-                            <td>{product.categoria}</td>
-                            <td>R$ {product.valor.toFixed(2)}</td>
-                            <td>{product.quantidade}</td>
-                        </tr>
+                        <TableRow key={product.codigo}>
+                            <TableCell>{product.codigo}</TableCell>
+                            <TableCell>{product.nome}</TableCell>
+                            <TableCell>{product.categoria}</TableCell>
+                            <TableCell>R$ {product.valor}</TableCell>
+                            <TableCell>{product.quant}</TableCell>
+                            <TableCell>
+                                <IconButton color="primary" size="small">
+                                    <Edit />
+                                </IconButton>
+                                <IconButton color="error" size="small">
+                                    <Delete />
+                                </IconButton>
+                            </TableCell>
+                        </TableRow>
                     ))}
-                </tbody>
-            </table>
-        </div>
+                </TableBody>
+            </Table>
+        </TableContainer>
     );
 };
 
