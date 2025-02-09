@@ -20,10 +20,10 @@ const Product = db.define("Product", {
     },
     fornecedor_id: { type: DataTypes.INTEGER, allowNull: true },
     observacoes: { type: DataTypes.TEXT, allowNull: true },
-    imagem_1: { type: DataTypes.STRING, allowNull: true },
-    imagem_2: { type: DataTypes.STRING, allowNull: true },
-    imagem_3: { type: DataTypes.STRING, allowNull: true },
-    imagem_4: { type: DataTypes.STRING, allowNull: true }
+    imagem1: { type: DataTypes.STRING, allowNull: true },
+    imagem2: { type: DataTypes.STRING, allowNull: true },
+    imagem3: { type: DataTypes.STRING, allowNull: true },
+    imagem4: { type: DataTypes.STRING, allowNull: true },
 }, { tableName: "produtos", timestamps: false });
 
 export default Product;

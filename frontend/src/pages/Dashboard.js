@@ -1,59 +1,36 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
-import { Box, Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from "@mui/material";
+import { Box, Typography, Button, Dialog, useMediaQuery } from "@mui/material";
 import { Add, Refresh } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
-import useMediaQuery from "@mui/material/useMediaQuery";
 import axios from "axios";
-import ProductList from "../components/ProductList"; // 🔥 Importando a tabela separada
+import ProductList from "../components/ProductList";
+import AddProduct from "./AddProduct";
 
 const Dashboard = () => {
     const [products, setProducts] = useState([]);
-    const [openDialog, setOpenDialog] = useState(false);
-    const [newProduct, setNewProduct] = useState({ nome: "", categoria: "", valor: "", quantidade: "" });
+    const [openAddProduct, setOpenAddProduct] = useState(false);
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
     const fetchProducts = () => {
         const token = localStorage.getItem("token");
+        if (!token) {
+            console.error("❌ Token não encontrado!");
+            return;
+        }
+
         axios.get("http://localhost:5001/products", {
             headers: { Authorization: `Bearer ${token}` }
         })
             .then(response => setProducts(response.data))
-            .catch(error => console.error("Erro ao buscar produtos:", error));
+            .catch(error => console.error("❌ Erro ao buscar produtos:", error));
     };
 
     useEffect(() => {
         fetchProducts();
     }, []);
-
-    const handleOpenDialog = () => setOpenDialog(true);
-    const handleCloseDialog = () => setOpenDialog(false);
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setNewProduct({ ...newProduct, [name]: value });
-    };
-
-    const handleSubmit = () => {
-        const token = localStorage.getItem("token");
-        const formattedProduct = {
-            nome: newProduct.nome,
-            categoria: newProduct.categoria,
-            valor: newProduct.valor,
-            quant: newProduct.quantidade
-        };
-
-        axios.post("http://localhost:5001/products", formattedProduct, {
-            headers: { Authorization: `Bearer ${token}` }
-        })
-            .then(() => {
-                handleCloseDialog();
-                fetchProducts();
-            })
-            .catch(error => console.error("Erro ao adicionar produto:", error));
-    };
 
     return (
         <>
@@ -76,47 +53,37 @@ const Dashboard = () => {
                     <Box sx={{
                         display: "flex",
                         justifyContent: "flex-end",
-                        marginBottom: 2,
                         width: "100%",
-                        maxWidth: "1200px"
+                        maxWidth: "1200px",
+                        marginBottom: 2
                     }}>
                         <Button
                             variant="contained"
                             color="primary"
                             startIcon={<Add />}
-                            sx={{ minWidth: "150px", marginRight: 2 }}
-                            onClick={handleOpenDialog}
+                            onClick={() => setOpenAddProduct(true)}
+                            sx={{ marginRight: 2, fontSize: isMobile ? "0.75rem" : "1rem" }}
                         >
                             Adicionar Produto
                         </Button>
                         <Button
                             variant="contained"
-                            color="grey"
+                            color="secondary"
                             startIcon={<Refresh />}
-                            sx={{ minWidth: "150px" }}
+                            sx={{ fontSize: isMobile ? "0.75rem" : "1rem" }}
                             onClick={fetchProducts}
                         >
                             Atualizar
                         </Button>
                     </Box>
 
-                    {/* 🔥 Agora usamos o ProductList.js para renderizar a tabela */}
-                    <ProductList products={products} />
-
-                    {/* 🔥 Diálogo para adicionar produto */}
-                    <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth maxWidth="sm">
-                        <DialogTitle>Adicionar Produto</DialogTitle>
-                        <DialogContent>
-                            <TextField fullWidth margin="dense" label="Nome" name="nome" onChange={handleChange} />
-                            <TextField fullWidth margin="dense" label="Categoria" name="categoria" onChange={handleChange} />
-                            <TextField fullWidth margin="dense" label="Valor" name="valor" type="number" onChange={handleChange} />
-                            <TextField fullWidth margin="dense" label="Quantidade" name="quantidade" type="number" onChange={handleChange} />
-                        </DialogContent>
-                        <DialogActions>
-                            <Button onClick={handleCloseDialog} color="secondary">Cancelar</Button>
-                            <Button onClick={handleSubmit} color="primary" variant="contained">Salvar</Button>
-                        </DialogActions>
+                    {/* 🔥 Diálogo para Adicionar Produto */}
+                    <Dialog open={openAddProduct} onClose={() => setOpenAddProduct(false)} fullWidth maxWidth="md">
+                        <AddProduct onClose={() => setOpenAddProduct(false)} onProductAdded={fetchProducts} />
                     </Dialog>
+
+                    {/* 🔥 Lista de Produtos */}
+                    <ProductList products={products} />
                 </Box>
             </Box>
         </>
