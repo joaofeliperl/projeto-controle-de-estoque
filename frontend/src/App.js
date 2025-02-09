@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Home from "./pages/Home";
 import { jwtDecode } from "jwt-decode";
+import Fornecedores from "./pages/AddProvider";
 
 const App = () => {
     return (
@@ -21,6 +22,7 @@ const App = () => {
                         </ProtectedRoute>
                     }
                 />
+                <Route path="/fornecedores" element={<Fornecedores />} />
                 <Route path="/" element={<AuthRedirect />} />
             </Routes>
         </Router>

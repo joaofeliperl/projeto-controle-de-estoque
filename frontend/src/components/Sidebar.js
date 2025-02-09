@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Drawer, List, ListItemButton, ListItemIcon, ListItemText, IconButton, Divider } from "@mui/material";
-import { Menu, Home, Inventory, ArrowDownward, ArrowUpward, ShoppingCart, People, Logout } from "@mui/icons-material";
+import { Menu, Home, Inventory, ArrowDownward, ArrowUpward, ShoppingCart, People, Logout, FireTruck, LocalShipping } from "@mui/icons-material";
 
 const Sidebar = () => {
     const [open, setOpen] = useState(false);
@@ -64,6 +64,11 @@ const Sidebar = () => {
                     <ListItemButton onClick={() => navigate("/vendas")} sx={{ cursor: "pointer" }}>
                         <ListItemIcon><ShoppingCart /></ListItemIcon>
                         <ListItemText primary="Vendas" />
+                    </ListItemButton>
+
+                    <ListItemButton onClick={() => navigate("/fornecedores")} sx={{ cursor: "pointer" }}>
+                        <ListItemIcon>< LocalShipping /></ListItemIcon>
+                        <ListItemText primary="Fornecedores" />
                     </ListItemButton>
 
                     <ListItemButton onClick={() => navigate("/usuarios")} sx={{ cursor: "pointer" }}>
