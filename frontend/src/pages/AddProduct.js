@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import {
-    Box, Button, Typography, Grid, IconButton
+    Box, Button, Typography, Grid, IconButton, TextField
 } from "@mui/material";
-import { Save, Cancel, Autorenew } from "@mui/icons-material";
+import { Save, Cancel, Autorenew, Close } from "@mui/icons-material";
 import axios from "axios";
 import SnackbarAlert from "../components/SnackbarAlert";
-import TextFieldWrapper from "../components/TextFieldWrapper"; // ✅ Campo de Texto Customizado
 import FornecedorSelect from "../components/FornecedorSelect"; // ✅ Seleção de Fornecedor
 import ImageUploader from "../components/ImageUploader"; // ✅ Upload de Imagens
 
@@ -58,13 +57,18 @@ const AddProduct = ({ onClose, onProductAdded }) => {
     };
 
     const handleImageUpload = (event) => {
-        const files = event.target.files;
-        if (files.length > 4) {
+        const files = Array.from(event.target.files);
+        if (files.length + product.imagens.length > 4) {
             setSnackbar({ open: true, message: "Você pode enviar no máximo 4 imagens!", severity: "warning" });
             return;
         }
 
-        setProduct({ ...product, imagens: Array.from(files) });
+        setProduct({ ...product, imagens: [...product.imagens, ...files] });
+    };
+
+    const handleRemoveImage = (index) => {
+        const updatedImages = product.imagens.filter((_, i) => i !== index);
+        setProduct({ ...product, imagens: updatedImages });
     };
 
     const handleSubmit = () => {
@@ -84,49 +88,72 @@ const AddProduct = ({ onClose, onProductAdded }) => {
     };
 
     return (
-        <Box sx={{ maxWidth: "800px", mx: "auto", p: 3, backgroundColor: "#fff", borderRadius: 2, boxShadow: 3 }}>
-            <Typography variant="h5">Criar ou Editar Produto</Typography>
+        <Box sx={{
+            maxWidth: "700px",
+            mx: "auto",
+            p: 4,
+            backgroundColor: "#fff",
+            borderRadius: 2,
+            boxShadow: 3
+        }}>
+            <Typography variant="h5" sx={{ marginBottom: 2 }}>Criar ou Editar Produto</Typography>
 
             <Grid container spacing={2}>
-                {/* Código Interno - Read Only */}
-                <Grid item xs={10}>
-                    <TextFieldWrapper label="Código Interno" name="codigo_interno" value={product.codigo_interno} readOnly />
+                {/* Código Interno - Read Only e Desabilitado */}
+                <Grid item xs={12} sm={10}>
+                    <TextField
+                        fullWidth
+                        label="Código Interno"
+                        value={product.codigo_interno}
+                        InputProps={{ readOnly: true, disabled: true }}
+                    />
                 </Grid>
-                <Grid item xs={2} sx={{ display: "flex", alignItems: "center" }}>
+                <Grid item xs={12} sm={2} sx={{ display: "flex", alignItems: "center" }}>
                     <IconButton color="primary" onClick={() => setProduct({ ...product, codigo_interno: generateCodigoInterno() })}>
                         <Autorenew />
                     </IconButton>
                 </Grid>
 
                 {/* Outros campos */}
-                <TextFieldWrapper label="Nome do Produto *" name="nome" value={product.nome} onChange={handleChange} required />
-                <TextFieldWrapper label="Código de Barras" name="codigo_barras" value={product.codigo_barras} onChange={handleChange} />
-                <TextFieldWrapper label="Estoque Atual *" name="estoque_atual" type="number" value={product.estoque_atual} onChange={handleChange} required />
-                <TextFieldWrapper label="Estoque Mínimo" name="estoque_minimo" type="number" value={product.estoque_minimo} onChange={handleChange} />
+                <Grid item xs={12} sm={6}><TextField fullWidth label="Nome do Produto *" name="nome" value={product.nome} onChange={handleChange} required /></Grid>
+                <Grid item xs={12} sm={6}><TextField fullWidth label="Código de Barras" name="codigo_barras" value={product.codigo_barras} onChange={handleChange} /></Grid>
+                <Grid item xs={12} sm={6}><TextField fullWidth label="Estoque Atual *" name="estoque_atual" type="number" value={product.estoque_atual} onChange={handleChange} required /></Grid>
+                <Grid item xs={12} sm={6}><TextField fullWidth label="Estoque Mínimo" name="estoque_minimo" type="number" value={product.estoque_minimo} onChange={handleChange} /></Grid>
+                <Grid item xs={12} sm={6}><TextField fullWidth label="Valor de Venda *" name="valor_venda" type="number" value={product.valor_venda} onChange={handleChange} required /></Grid>
+                <Grid item xs={12} sm={6}><TextField fullWidth label="Valor de Custo" name="valor_custo" type="number" value={product.valor_custo} onChange={handleChange} /></Grid>
 
-                <TextFieldWrapper label="Valor de Venda *" name="valor_venda" type="number" value={product.valor_venda} onChange={handleChange} required />
-                <TextFieldWrapper label="Valor de Custo" name="valor_custo" type="number" value={product.valor_custo} onChange={handleChange} />
-
-                {/* Margem de Lucro - Read Only */}
-                <Grid item xs={6}>
-                    <TextFieldWrapper
-                        label="Margem de Lucro (%)"
-                        name="margem_lucro"
-                        value={margemLucro}
-                        readOnly
-                    />
+                {/* Margem de Lucro - Read Only e Desabilitado */}
+                <Grid item xs={12}>
+                    <TextField fullWidth label="Margem de Lucro (%)" value={margemLucro} InputProps={{ readOnly: true, disabled: true }} />
                 </Grid>
 
                 {/* Seleção de Fornecedor */}
                 <FornecedorSelect fornecedores={fornecedores} value={product.fornecedor_id} onChange={handleChange} />
 
-                {/* Observações */}
+                {/* Observações - Maior */}
                 <Grid item xs={12}>
-                    <TextFieldWrapper label="Observações" name="observacoes" value={product.observacoes} onChange={handleChange} multiline rows={3} />
+                    <TextField fullWidth label="Observações" name="observacoes" value={product.observacoes} onChange={handleChange} multiline rows={4} />
                 </Grid>
 
                 {/* Upload de Imagens */}
-                <ImageUploader onUpload={handleImageUpload} imageCount={product.imagens.length} />
+                <Grid item xs={12}>
+                    <Button variant="contained" component="label">
+                        Enviar Imagens
+                        <input type="file" hidden multiple accept="image/*" onChange={handleImageUpload} />
+                    </Button>
+                </Grid>
+
+                {/* Preview de Imagens */}
+                <Grid item xs={12} sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
+                    {product.imagens.map((file, index) => (
+                        <Box key={index} sx={{ position: "relative" }}>
+                            <img src={URL.createObjectURL(file)} alt="Preview" width="80" height="80" style={{ borderRadius: 8 }} />
+                            <IconButton size="small" sx={{ position: "absolute", top: -5, right: -5, color: "red" }} onClick={() => handleRemoveImage(index)}>
+                                <Close />
+                            </IconButton>
+                        </Box>
+                    ))}
+                </Grid>
 
                 {/* Botões */}
                 <Grid item xs={12} sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
