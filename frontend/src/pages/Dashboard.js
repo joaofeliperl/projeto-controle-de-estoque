@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
-import {
-    Box, Typography, Paper, Table, TableBody, TableCell, TableContainer,
-    TableHead, TableRow, Button, IconButton, Dialog, DialogTitle, DialogContent,
-    DialogActions, TextField, useMediaQuery
-} from "@mui/material";
-import { Edit, Delete, Add, Refresh } from "@mui/icons-material";
+import { Box, Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from "@mui/material";
+import { Add, Refresh } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import axios from "axios";
+import ProductList from "../components/ProductList"; // 🔥 Importando a tabela separada
 
 const Dashboard = () => {
     const [products, setProducts] = useState([]);
@@ -18,13 +16,13 @@ const Dashboard = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
     const fetchProducts = () => {
-        const token = localStorage.getItem("token")
+        const token = localStorage.getItem("token");
         axios.get("http://localhost:5001/products", {
             headers: { Authorization: `Bearer ${token}` }
         })
             .then(response => setProducts(response.data))
             .catch(error => console.error("Erro ao buscar produtos:", error));
-    }
+    };
 
     useEffect(() => {
         fetchProducts();
@@ -60,10 +58,8 @@ const Dashboard = () => {
     return (
         <>
             <Navbar />
-
             <Box sx={{ display: "flex", marginTop: "64px" }}>
                 <Sidebar />
-
                 <Box component="main" sx={{
                     flexGrow: 1,
                     p: 3,
@@ -79,7 +75,7 @@ const Dashboard = () => {
                     {/* 🔥 Botões alinhados à direita */}
                     <Box sx={{
                         display: "flex",
-                        justifyContent: "flex-end", // Alinhamento à direita
+                        justifyContent: "flex-end",
                         marginBottom: 2,
                         width: "100%",
                         maxWidth: "1200px"
@@ -95,7 +91,7 @@ const Dashboard = () => {
                         </Button>
                         <Button
                             variant="contained"
-                            color="grey"
+                            color="secondary"
                             startIcon={<Refresh />}
                             sx={{ minWidth: "150px" }}
                             onClick={fetchProducts}
@@ -104,45 +100,8 @@ const Dashboard = () => {
                         </Button>
                     </Box>
 
-                    {/* 🔥 Tabela centralizada */}
-                    <TableContainer component={Paper} sx={{
-                        width: "100%",
-                        maxWidth: "1200px",
-                        borderRadius: "8px",
-                        boxShadow: 3
-                    }}>
-                        <Table>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell><b>Código</b></TableCell>
-                                    <TableCell><b>Nome</b></TableCell>
-                                    <TableCell><b>Categoria</b></TableCell>
-                                    <TableCell><b>Valor</b></TableCell>
-                                    <TableCell><b>Quantidade</b></TableCell>
-                                    <TableCell><b>Ações</b></TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {products.map((product) => (
-                                    <TableRow key={product.codigo}>
-                                        <TableCell>{product.codigo}</TableCell>
-                                        <TableCell>{product.nome}</TableCell>
-                                        <TableCell>{product.categoria}</TableCell>
-                                        <TableCell>R$ {product.valor}</TableCell>
-                                        <TableCell>{product.quant}</TableCell>
-                                        <TableCell>
-                                            <IconButton color="primary" size="small">
-                                                <Edit />
-                                            </IconButton>
-                                            <IconButton color="error" size="small">
-                                                <Delete />
-                                            </IconButton>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
+                    {/* 🔥 Agora usamos o ProductList.js para renderizar a tabela */}
+                    <ProductList products={products} />
 
                     {/* 🔥 Diálogo para adicionar produto */}
                     <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth maxWidth="sm">

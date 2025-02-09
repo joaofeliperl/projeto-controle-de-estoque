@@ -1,13 +1,13 @@
 import React from "react";
-import { Container, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, useMediaQuery } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Container, useMediaQuery } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
 
 const ProductList = ({ products }) => {
     const isMobile = useMediaQuery("(max-width:600px)");
 
     return (
-        <Container sx={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100%" }}>
-            <TableContainer component={Paper} sx={{ width: "100%", maxWidth: "1100px", boxShadow: 3, borderRadius: 2 }}>
+        <Container sx={{ display: "flex", justifyContent: "center", width: "100%" }}>
+            <TableContainer component={Paper} sx={{ width: "100%", maxWidth: "1200px", boxShadow: 3, borderRadius: 2 }}>
                 <Table>
                     <TableHead>
                         <TableRow>
