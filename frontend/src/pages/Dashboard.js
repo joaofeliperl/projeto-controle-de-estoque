@@ -91,7 +91,7 @@ const Dashboard = () => {
                         </Button>
                         <Button
                             variant="contained"
-                            color="secondary"
+                            color="grey"
                             startIcon={<Refresh />}
                             sx={{ minWidth: "150px" }}
                             onClick={fetchProducts}
