@@ -1,8 +1,11 @@
 import React from "react";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Container, useMediaQuery } from "@mui/material";
-import { Edit, Delete } from "@mui/icons-material";
+import {
+    Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
+    IconButton, Container, useMediaQuery, Tooltip
+} from "@mui/material";
+import { Edit, Delete, Visibility } from "@mui/icons-material";
 
-const ProductList = ({ products }) => {
+const ProductList = ({ products, onView, onEdit, onDelete }) => {
     const isMobile = useMediaQuery("(max-width:600px)");
 
     return (
@@ -11,29 +14,56 @@ const ProductList = ({ products }) => {
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell><b>Código</b></TableCell>
+                            <TableCell align="center"><b>Código Interno</b></TableCell>
                             <TableCell><b>Nome</b></TableCell>
-                            <TableCell><b>Categoria</b></TableCell>
-                            <TableCell><b>Valor</b></TableCell>
-                            <TableCell><b>Quantidade</b></TableCell>
+                            <TableCell align="center"><b>Valor de Venda</b></TableCell>
+                            <TableCell align="center"><b>Estoque Atual</b></TableCell>
                             <TableCell align="center"><b>Ações</b></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {products.map((product) => (
-                            <TableRow key={product.codigo}>
-                                <TableCell>{product.codigo}</TableCell>
+                            <TableRow key={product.codigo_interno}>
+                                <TableCell align="center">{product.codigo_interno}</TableCell>
                                 <TableCell>{product.nome}</TableCell>
-                                <TableCell>{product.categoria}</TableCell>
-                                <TableCell>R$ {product.valor}</TableCell>
-                                <TableCell>{product.quant}</TableCell>
+                                <TableCell align="center">R$ {product.valor_venda}</TableCell>
+                                <TableCell align="center">{product.estoque_atual}</TableCell>
                                 <TableCell align="center">
-                                    <IconButton color="primary" size={isMobile ? "small" : "medium"} sx={{ mx: 1 }}>
-                                        <Edit />
-                                    </IconButton>
-                                    <IconButton color="error" size={isMobile ? "small" : "medium"} sx={{ mx: 1 }}>
-                                        <Delete />
-                                    </IconButton>
+                                    {/* 🔍 Botão Visualizar */}
+                                    <Tooltip title="Visualizar">
+                                        <IconButton
+                                            color="info"
+                                            size={isMobile ? "small" : "medium"}
+                                            sx={{ mx: 0.5 }}
+                                            onClick={() => onView(product)}
+                                        >
+                                            <Visibility />
+                                        </IconButton>
+                                    </Tooltip>
+
+                                    {/* ✏️ Botão Editar */}
+                                    <Tooltip title="Editar">
+                                        <IconButton
+                                            color="primary"
+                                            size={isMobile ? "small" : "medium"}
+                                            sx={{ mx: 0.5 }}
+                                            onClick={() => onEdit(product)}
+                                        >
+                                            <Edit />
+                                        </IconButton>
+                                    </Tooltip>
+
+                                    {/* 🗑️ Botão Excluir */}
+                                    <Tooltip title="Excluir">
+                                        <IconButton
+                                            color="error"
+                                            size={isMobile ? "small" : "medium"}
+                                            sx={{ mx: 0.5 }}
+                                            onClick={() => onDelete(product)}
+                                        >
+                                            <Delete />
+                                        </IconButton>
+                                    </Tooltip>
                                 </TableCell>
                             </TableRow>
                         ))}

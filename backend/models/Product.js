@@ -4,7 +4,13 @@ import db from "../config/database.js";
 const Product = db.define("Product", {
     id: { type: DataTypes.BIGINT, autoIncrement: true, primaryKey: true },
     nome: { type: DataTypes.STRING, allowNull: false },
-    codigo_barras: { type: DataTypes.STRING, allowNull: true },
+    codigo_interno: {
+        type: DataTypes.STRING(13),
+        allowNull: false,
+        unique: true,
+        defaultValue: () => Math.floor(1000000000000 + Math.random() * 9000000000000).toString() // 🔥 Gera sempre 13 dígitos
+    },
+    codigo_barras: { type: DataTypes.STRING, allowNull: true }, // Opcional
     estoque_atual: { type: DataTypes.INTEGER, allowNull: false },
     estoque_minimo: { type: DataTypes.INTEGER, allowNull: true },
     valor_venda: { type: DataTypes.DECIMAL(10, 2), allowNull: false },

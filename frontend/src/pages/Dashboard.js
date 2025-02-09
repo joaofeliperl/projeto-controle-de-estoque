@@ -68,9 +68,9 @@ const Dashboard = () => {
                         </Button>
                         <Button
                             variant="contained"
-                            color="secondary"
+                            color="default" // ✅ Agora o botão "Atualizar" é cinza
                             startIcon={<Refresh />}
-                            sx={{ fontSize: isMobile ? "0.75rem" : "1rem" }}
+                            sx={{ fontSize: isMobile ? "0.75rem" : "1rem", backgroundColor: "#BDBDBD" }}
                             onClick={fetchProducts}
                         >
                             Atualizar
@@ -83,7 +83,16 @@ const Dashboard = () => {
                     </Dialog>
 
                     {/* 🔥 Lista de Produtos */}
-                    <ProductList products={products} />
+                    <ProductList
+                        products={products}
+                        columns={[
+                            { id: "codigo_interno", label: "Código Interno" },
+                            { id: "nome", label: "Nome" },
+                            { id: "valor_venda", label: "Valor de Venda" },
+                            { id: "estoque_atual", label: "Estoque Atual" },
+                            { id: "acoes", label: "Ações" } // Inclui os botões de ação (visualizar, editar e excluir)
+                        ]}
+                    />
                 </Box>
             </Box>
         </>

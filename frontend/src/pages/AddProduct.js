@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from "react";
 import {
-    Box, Button, TextField, Select, MenuItem, InputLabel, FormControl, Typography, Grid
+    Box, Button, Typography, Grid, IconButton
 } from "@mui/material";
-import { AddPhotoAlternate, Save, Cancel } from "@mui/icons-material";
+import { Save, Cancel, Autorenew } from "@mui/icons-material";
 import axios from "axios";
+import SnackbarAlert from "../components/SnackbarAlert";
+import TextFieldWrapper from "../components/TextFieldWrapper"; // ✅ Campo de Texto Customizado
+import FornecedorSelect from "../components/FornecedorSelect"; // ✅ Seleção de Fornecedor
+import ImageUploader from "../components/ImageUploader"; // ✅ Upload de Imagens
 
 const AddProduct = ({ onClose, onProductAdded }) => {
+    const generateCodigoInterno = () => Math.floor(1000000000000 + Math.random() * 9000000000000).toString();
+
     const [product, setProduct] = useState({
         nome: "",
-        codigo_interno: Math.floor(1000000000000 + Math.random() * 9000000000000), // 🔥 Gera um código de 13 dígitos
+        codigo_interno: generateCodigoInterno(),
         codigo_barras: "",
         estoque_atual: "",
         estoque_minimo: "",
@@ -20,149 +26,116 @@ const AddProduct = ({ onClose, onProductAdded }) => {
     });
 
     const [fornecedores, setFornecedores] = useState([]);
-    const [imagePreviews, setImagePreviews] = useState([]);
+    const [margemLucro, setMargemLucro] = useState(""); // ✅ Estado para margem de lucro
+    const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
         axios.get("http://localhost:5001/fornecedores", {
-            headers: { Authorization: `Bearer ${token}` }
+            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
         })
             .then(response => setFornecedores(response.data))
             .catch(error => console.error("Erro ao carregar fornecedores:", error));
     }, []);
 
+    // Atualiza os campos e recalcula a margem de lucro
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setProduct({ ...product, [name]: value });
+        const newProduct = { ...product, [name]: value };
+
+        // Recalcula margem de lucro
+        if (name === "valor_venda" || name === "valor_custo") {
+            const custo = parseFloat(newProduct.valor_custo) || 0;
+            const venda = parseFloat(newProduct.valor_venda) || 0;
+
+            if (custo > 0 && venda > 0) {
+                setMargemLucro(((venda - custo) / custo * 100).toFixed(2) + "%");
+            } else {
+                setMargemLucro("");
+            }
+        }
+
+        setProduct(newProduct);
     };
 
     const handleImageUpload = (event) => {
         const files = event.target.files;
         if (files.length > 4) {
-            alert("Você pode enviar no máximo 4 imagens!");
+            setSnackbar({ open: true, message: "Você pode enviar no máximo 4 imagens!", severity: "warning" });
             return;
         }
-        setProduct({ ...product, imagens: Array.from(files) }); // 🔥 Alterado para "Array.from"
+
+        setProduct({ ...product, imagens: Array.from(files) });
     };
 
     const handleSubmit = () => {
-        if (!product.nome || !product.estoque_atual || !product.valor_venda) {
-            alert("Preencha os campos obrigatórios!");
-            return;
-        }
-
-        const formData = new FormData();
-        Object.keys(product).forEach(key => {
-            if (key !== "imagens") {
-                formData.append(key, product[key]);
-            }
-        });
-
-        // 🔥 Certificando que o nome do campo é "imagens" (o mesmo do multer)
-        product.imagens.forEach((file) => {
-            formData.append("imagens", file);
-        });
-
-        axios.post("http://localhost:5001/products", formData, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-                Authorization: `Bearer ${localStorage.getItem("token")}`
-            }
+        axios.post("http://localhost:5001/products", product, {
+            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
         })
             .then(() => {
-                alert("Produto cadastrado com sucesso!");
-                onProductAdded();
-                onClose();
+                setSnackbar({ open: true, message: "Produto cadastrado com sucesso!", severity: "success" });
+                setTimeout(() => {
+                    onClose();
+                    onProductAdded();
+                }, 1000);
             })
-            .catch(error => console.error("Erro ao cadastrar produto:", error));
+            .catch(() => {
+                setSnackbar({ open: true, message: "Erro ao cadastrar produto!", severity: "error" });
+            });
     };
 
     return (
         <Box sx={{ maxWidth: "800px", mx: "auto", p: 3, backgroundColor: "#fff", borderRadius: 2, boxShadow: 3 }}>
-            <Typography variant="h5" gutterBottom>
-                Criar ou Editar Produto
-            </Typography>
+            <Typography variant="h5">Criar ou Editar Produto</Typography>
 
             <Grid container spacing={2}>
-                <Grid item xs={12}>
-                    <TextField fullWidth label="Nome do Produto *" name="nome" value={product.nome} onChange={handleChange} required />
+                {/* Código Interno - Read Only */}
+                <Grid item xs={10}>
+                    <TextFieldWrapper label="Código Interno" name="codigo_interno" value={product.codigo_interno} readOnly />
+                </Grid>
+                <Grid item xs={2} sx={{ display: "flex", alignItems: "center" }}>
+                    <IconButton color="primary" onClick={() => setProduct({ ...product, codigo_interno: generateCodigoInterno() })}>
+                        <Autorenew />
+                    </IconButton>
                 </Grid>
 
-                <Grid item xs={6}>
-                    <TextField fullWidth label="Código Interno" value={product.codigo_interno} disabled />
-                </Grid>
-                <Grid item xs={6}>
-                    <TextField fullWidth label="Código de Barras" name="codigo_barras" value={product.codigo_barras} onChange={handleChange} />
-                </Grid>
+                {/* Outros campos */}
+                <TextFieldWrapper label="Nome do Produto *" name="nome" value={product.nome} onChange={handleChange} required />
+                <TextFieldWrapper label="Código de Barras" name="codigo_barras" value={product.codigo_barras} onChange={handleChange} />
+                <TextFieldWrapper label="Estoque Atual *" name="estoque_atual" type="number" value={product.estoque_atual} onChange={handleChange} required />
+                <TextFieldWrapper label="Estoque Mínimo" name="estoque_minimo" type="number" value={product.estoque_minimo} onChange={handleChange} />
 
-                <Grid item xs={6}>
-                    <TextField fullWidth label="Estoque Atual *" name="estoque_atual" type="number" value={product.estoque_atual} onChange={handleChange} required />
-                </Grid>
-                <Grid item xs={6}>
-                    <TextField fullWidth label="Estoque Mínimo" name="estoque_minimo" type="number" value={product.estoque_minimo} onChange={handleChange} />
-                </Grid>
+                <TextFieldWrapper label="Valor de Venda *" name="valor_venda" type="number" value={product.valor_venda} onChange={handleChange} required />
+                <TextFieldWrapper label="Valor de Custo" name="valor_custo" type="number" value={product.valor_custo} onChange={handleChange} />
 
+                {/* Margem de Lucro - Read Only */}
                 <Grid item xs={6}>
-                    <TextField fullWidth label="Valor de Venda *" name="valor_venda" type="number" value={product.valor_venda} onChange={handleChange} required />
-                </Grid>
-                <Grid item xs={6}>
-                    <TextField fullWidth label="Valor de Custo" name="valor_custo" type="number" value={product.valor_custo} onChange={handleChange} />
-                </Grid>
-
-                <Grid item xs={12}>
-                    <FormControl fullWidth>
-                        <InputLabel>Fornecedor</InputLabel>
-                        <Select name="fornecedor_id" value={product.fornecedor_id} onChange={handleChange}>
-                            <MenuItem value="">Nenhum</MenuItem>
-                            {fornecedores.map(f => (
-                                <MenuItem key={f.id} value={f.id}>{f.nome}</MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                </Grid>
-
-                {/* 🔥 Observações */}
-                <Grid item xs={12}>
-                    <TextField
-                        fullWidth
-                        label="Observações"
-                        name="observacoes"
-                        multiline
-                        rows={3}
-                        value={product.observacoes}
-                        onChange={handleChange}
+                    <TextFieldWrapper
+                        label="Margem de Lucro (%)"
+                        name="margem_lucro"
+                        value={margemLucro}
+                        readOnly
                     />
                 </Grid>
 
-                {/* 🔥 Upload de Imagens */}
+                {/* Seleção de Fornecedor */}
+                <FornecedorSelect fornecedores={fornecedores} value={product.fornecedor_id} onChange={handleChange} />
+
+                {/* Observações */}
                 <Grid item xs={12}>
-                    <Button variant="contained" component="label" startIcon={<AddPhotoAlternate />}>
-                        Enviar Imagens
-                        <input type="file" hidden multiple accept="image/*" onChange={handleImageUpload} />
-                    </Button>
-                    {product.imagens.length > 0 && (
-                        <Typography variant="caption" sx={{ ml: 2 }}>
-                            {product.imagens.length} imagem(ns) selecionada(s)
-                        </Typography>
-                    )}
+                    <TextFieldWrapper label="Observações" name="observacoes" value={product.observacoes} onChange={handleChange} multiline rows={3} />
                 </Grid>
 
-                {/* 🔥 Pré-visualização das imagens */}
-                <Grid item xs={12} sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-                    {imagePreviews.map((src, index) => (
-                        <img key={index} src={src} alt={`Preview ${index + 1}`} width="100" height="100" style={{ borderRadius: 8, objectFit: "cover" }} />
-                    ))}
-                </Grid>
+                {/* Upload de Imagens */}
+                <ImageUploader onUpload={handleImageUpload} imageCount={product.imagens.length} />
 
+                {/* Botões */}
                 <Grid item xs={12} sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
-                    <Button variant="contained" color="secondary" startIcon={<Cancel />} onClick={onClose}>
-                        Cancelar
-                    </Button>
-                    <Button variant="contained" color="primary" startIcon={<Save />} onClick={handleSubmit}>
-                        Salvar
-                    </Button>
+                    <Button variant="contained" color="error" startIcon={<Cancel />} onClick={onClose}>Cancelar</Button>
+                    <Button variant="contained" color="primary" startIcon={<Save />} onClick={handleSubmit}>Salvar</Button>
                 </Grid>
             </Grid>
+
+            <SnackbarAlert open={snackbar.open} onClose={() => setSnackbar({ ...snackbar, open: false })} message={snackbar.message} severity={snackbar.severity} />
         </Box>
     );
 };
