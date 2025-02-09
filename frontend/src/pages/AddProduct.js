@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
-    Box, Button, Typography, Grid, IconButton, TextField
+    Box, Button, Typography, Grid, IconButton, TextField, InputAdornment
 } from "@mui/material";
 import { Save, Cancel, Autorenew, Close } from "@mui/icons-material";
 import axios from "axios";
@@ -101,17 +101,24 @@ const AddProduct = ({ onClose, onProductAdded }) => {
             <Grid container spacing={2}>
                 {/* Código Interno - Read Only e Desabilitado */}
                 <Grid item xs={12} sm={10}>
-                    <TextField
-                        fullWidth
-                        label="Código Interno"
-                        value={product.codigo_interno}
-                        InputProps={{ readOnly: true, disabled: true }}
-                    />
-                </Grid>
-                <Grid item xs={12} sm={2} sx={{ display: "flex", alignItems: "center" }}>
-                    <IconButton color="primary" onClick={() => setProduct({ ...product, codigo_interno: generateCodigoInterno() })}>
-                        <Autorenew />
-                    </IconButton>
+                    <Grid item xs={12}>
+                        <TextField
+                            label="Código Interno"
+                            name="codigo_interno"
+                            value={product.codigo_interno}
+                            InputProps={{
+                                readOnly: true,
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton color="primary" onClick={() => setProduct({ ...product, codigo_interno: generateCodigoInterno() })}>
+                                            <Autorenew />
+                                        </IconButton>
+                                    </InputAdornment>
+                                )
+                            }}
+                            fullWidth
+                        />
+                    </Grid>
                 </Grid>
 
                 {/* Outros campos */}
