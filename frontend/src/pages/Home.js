@@ -15,6 +15,7 @@ const Home = () => {
         { title: "Vendas", description: "Gerenciar vendas", icon: <ShoppingCart fontSize="large" />, path: "/vendas" },
         { title: "Usuários", description: "Gerenciar usuários", icon: <People fontSize="large" />, path: "/usuarios" },
         { title: "Feedback", description: "Deixe seu feedback", icon: <Feedback fontSize="large" />, path: "/feedback" },
+        { title: "Fornecedores", description: "Gerenciar Fornecedores", icon: <Feedback fontSize="large" />, path: "/fornecedores" },
     ];
 
     return (
