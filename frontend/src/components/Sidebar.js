@@ -71,7 +71,7 @@ const Sidebar = () => {
                         <ListItemText primary="Fornecedores" />
                     </ListItemButton>
 
-                    <ListItemButton onClick={() => navigate("/usuarios")} sx={{ cursor: "pointer" }}>
+                    <ListItemButton onClick={() => navigate("/users")} sx={{ cursor: "pointer" }}>
                         <ListItemIcon><People /></ListItemIcon>
                         <ListItemText primary="Usuários" />
                     </ListItemButton>

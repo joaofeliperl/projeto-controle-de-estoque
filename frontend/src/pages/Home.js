@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Paper, Typography, Container, Grid } from "@mui/material";
-import { Inventory, Login, ShoppingCart, ExitToApp, People, Assessment, Feedback } from "@mui/icons-material";
+import { Inventory, Login, ShoppingCart, ExitToApp, People, Feedback, LocalShipping } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
@@ -15,7 +15,7 @@ const Home = () => {
         { title: "Vendas", description: "Gerenciar vendas", icon: <ShoppingCart fontSize="large" />, path: "/vendas" },
         { title: "Usuários", description: "Gerenciar usuários", icon: <People fontSize="large" />, path: "/usuarios" },
         { title: "Feedback", description: "Deixe seu feedback", icon: <Feedback fontSize="large" />, path: "/feedback" },
-        { title: "Fornecedores", description: "Gerenciar Fornecedores", icon: <Feedback fontSize="large" />, path: "/fornecedores" },
+        { title: "Fornecedores", description: "Gerenciar Fornecedores", icon: <LocalShipping fontSize="large" />, path: "/fornecedores" },
     ];
 
     return (

@@ -6,6 +6,8 @@ import Signup from "./pages/Signup";
 import Home from "./pages/Home";
 import { jwtDecode } from "jwt-decode";
 import Fornecedores from "./pages/AddProvider";
+import AddUser from "./pages/AddUser";
+import UserList from "./pages/UserList";
 
 const App = () => {
     return (
@@ -14,6 +16,8 @@ const App = () => {
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/home" element={<Home />} />
+                <Route path="/users" element={<UserList />} />
+                <Route path="/add-user" element={<AddUser />} />
                 <Route
                     path="/dashboard"
                     element={
