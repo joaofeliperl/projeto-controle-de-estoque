@@ -10,7 +10,7 @@ const AddProvider = () => {
     const [fornecedor, setFornecedor] = useState({
         nome: "",
         email: "",
-        cnpj: "",
+        CNPJ: "",
         celular: "",
         telefone: "",
         cep: "",

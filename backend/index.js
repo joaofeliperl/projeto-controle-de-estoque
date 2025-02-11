@@ -5,6 +5,7 @@ import db from "./config/database.js";
 import authRoutes from "./routes/authRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import dotenv from "dotenv";
+import FornecedorRoutes from "./routes/fornecedorRoutes.js";
 
 dotenv.config(); // Carrega variáveis do .env
 
@@ -28,6 +29,7 @@ console.log("🚀 PORT:", process.env.PORT || 5001);
 // Rotas
 app.use("/auth", authRoutes);
 app.use("/products", productRoutes);
+app.use("/fornecedores", FornecedorRoutes);
 
 // 🔥 Testa a conexão com o banco antes de sincronizar
 db.authenticate()
